@@ -1,14 +1,12 @@
 import Footer from "@/components/footer/Footer";
 import ReservarCita from "@/components/reservar-cita/ReservarCita";
-import React from "react";
+import React, { Suspense } from "react";
 
-const page = () => {
+export default function Page() {
   return (
-    <>
+    <Suspense fallback={<p>Cargando...</p>}>
       <ReservarCita />
       <Footer />
-    </>
+    </Suspense>
   );
-};
-
-export default page;
+}
