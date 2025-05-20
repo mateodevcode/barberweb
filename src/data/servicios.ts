@@ -1,33 +1,27 @@
-import { IoMdCut } from "react-icons/io";
-
 export interface Servicio {
+  id: string;
   nombre: string;
   precio: number;
   duracion: number;
-  icon: React.ReactElement | null;
-  imagen: string | null;
 }
 
 export const servicios: Servicio[] = [
   {
+    id: "1",
     nombre: "Corte de cabello",
     precio: 15,
     duracion: 30,
-    icon: <IoMdCut className="text-2xl" />,
-    imagen: null,
   },
   {
+    id: "2",
     nombre: "Barba",
     precio: 10,
     duracion: 20,
-    icon: null,
-    imagen: "/icon/bigote.png",
   },
   {
+    id: "3",
     nombre: "Corte y Barba",
     precio: 20,
     duracion: 50,
-    icon: <IoMdCut className="text-2xl" />,
-    imagen: "/icon/bigote.png",
   },
 ];

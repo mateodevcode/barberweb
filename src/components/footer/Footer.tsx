@@ -10,7 +10,7 @@ import { MdOutlinePerson } from "react-icons/md";
 const Footer = () => {
   const router = useRouter();
   return (
-    <div className="w-full h-14 bg-zinc-900 fixed bottom-0 md:hidden items-center justify-center flex">
+    <div className="w-full h-14 bg-zinc-900 fixed bottom-0 md:hidden items-center justify-center flex z-20">
       <div className="w-11/12 flex items-center justify-between">
         <div className="mx-2" onClick={() => router.push("/")}>
           <GoHome className="text-2xl hover:text-zinc-400 text-white cursor-pointer select-none" />

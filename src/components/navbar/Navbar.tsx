@@ -12,7 +12,7 @@ const Navbar = () => {
           height={400}
           className="object-cover w-16 md:w-24 h-auto cursor-pointer"
         />
-        <BsPersonCircle className="text-2xl md:text-3xl text-black cursor-pointer" />
+        <BsPersonCircle className="text-2xl md:text-3xl text-black cursor-pointer hover:text-zinc-700" />
       </div>
     </div>
   );

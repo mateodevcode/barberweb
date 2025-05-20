@@ -1,15 +1,18 @@
 type Hora = { hora: string };
 
-function generarHoras(inicio: number, fin: number): Hora[] {
-  const horas: Hora[] = [];
-  for (let i = inicio; i < fin; i++) {
-    const horaFormateada = i.toString().padStart(2, "0") + ":00";
-    horas.push({ hora: horaFormateada });
+function generarBloquesDe15Minutos(inicio: number, fin: number): Hora[] {
+  const bloques: Hora[] = [];
+  for (let h = inicio; h < fin; h++) {
+    for (let m = 0; m < 60; m += 15) {
+      const hora = h.toString().padStart(2, "0");
+      const minuto = m.toString().padStart(2, "0");
+      bloques.push({ hora: `${hora}:${minuto}` });
+    }
   }
-  return horas;
+  return bloques;
 }
 
-export const horasTrabajo: Hora[] = [
-  ...generarHoras(9, 13),  // 09:00 - 12:00
-  ...generarHoras(15, 22), // 15:00 - 21:00
+export const bloquesTrabajo: Hora[] = [
+  ...generarBloquesDe15Minutos(9, 13), // 09:00 - 12:45
+  ...generarBloquesDe15Minutos(15, 22), // 15:00 - 21:45
 ];
