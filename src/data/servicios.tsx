@@ -1,6 +1,6 @@
 import { IoMdCut } from "react-icons/io";
 
-interface Servicio {
+export interface Servicio {
   nombre: string;
   precio: number;
   duracion: number;

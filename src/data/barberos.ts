@@ -1,6 +1,8 @@
-interface Barbero {
+export interface Barbero {
+  id?: string;
   nombre: string;
   imagen: string;
+  telefono?: string;
 }
 
 export const barberos: Barbero[] = [

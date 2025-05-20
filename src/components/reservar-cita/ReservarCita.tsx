@@ -1,20 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { completarDia } from "@/config/completarDia";
 import { horasTrabajo } from "@/config/horas";
 import { obtenerDosLetras } from "@/config/obtenerDosLetras";
-import { barberos } from "@/data/barberos";
+// import { barberos } from "@/data/barberos";
 import { meses, mesesSinDomingo } from "@/data/meses";
 import Image from "next/image";
-import { servicios } from "@/data/servicios";
+// import { servicios } from "@/data/servicios";
 import { BiPlus } from "react-icons/bi";
 import { useSearchParams } from "next/navigation";
 import { FaCircleCheck } from "react-icons/fa6";
+import { supabase } from "@/lib/supabaseClient";
+import { Barbero } from "@/data/barberos";
+import { Servicio } from "@/data/servicios";
+import { IoMdCut } from "react-icons/io";
 
 const ReservarCita = () => {
   const searchParams = useSearchParams();
   const servicioParam = searchParams.get("servicio");
+  const [barberos, setBarberos] = useState<Barbero[]>([]);
+  const [servicios, setServicios] = useState<Servicio[]>([]);
 
   const [formData, setFormData] = useState({
     dia: "",
@@ -24,6 +30,29 @@ const ReservarCita = () => {
     hora: "",
   });
   const [citaConfirmada, setCitaConfirmada] = useState(false);
+
+  useEffect(() => {
+    const fetchBarberos = async () => {
+      const { data, error } = await supabase
+        .from("barberos")
+        .select("*")
+        .order("created_at", { ascending: true });
+      if (error) console.error("Error:", error);
+      else setBarberos(data);
+    };
+
+    fetchBarberos();
+
+    const fetchServicios = async () => {
+      const { data, error } = await supabase
+        .from("servicios")
+        .select("*")
+        .order("created_at", { ascending: true });
+      if (error) console.error("Error:", error);
+      else setServicios(data);
+    };
+    fetchServicios();
+  }, []);
 
   return (
     <>
@@ -86,14 +115,26 @@ const ReservarCita = () => {
                 }}
               >
                 <div className="flex items-center justify-center space-x-1">
-                  {servicio.icon && (servicio.icon as React.ReactNode)}
-                  {servicio.imagen && servicio.icon && (
-                    <BiPlus className="text-xl" />
+                  {servicio.nombre === "Corte de cabello" && (
+                    <IoMdCut className="text-2xl" />
                   )}
-                  {servicio.imagen && (
+                  {servicio.nombre === "Corte y Barba" && (
+                    <>
+                      <IoMdCut className="text-2xl" />
+                      <BiPlus className="text-xl" />
+                      <Image
+                        src={"/icon/bigote.png"}
+                        alt={"Barba"}
+                        width={100}
+                        height={100}
+                        className="w-10"
+                      />
+                    </>
+                  )}
+                  {servicio.nombre === "Barba" && (
                     <Image
-                      src={servicio.imagen}
-                      alt={servicio.nombre}
+                      src={"/icon/bigote.png"}
+                      alt={"Barba"}
                       width={100}
                       height={100}
                       className="w-10"
