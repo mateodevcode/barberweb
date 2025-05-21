@@ -14,6 +14,7 @@ const BannerReserva = () => {
           alt="Banner de Reserva"
           width={1920}
           height={1080}
+          priority
           className="rounded-xl h-full object-cover"
         />
         <h3 className="text-2xl md:text-4xl font-bold text-white absolute bottom-4 md:bottom-16  md:left-16 left-4">

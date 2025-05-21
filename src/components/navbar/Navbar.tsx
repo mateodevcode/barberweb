@@ -8,9 +8,10 @@ const Navbar = () => {
         <Image
           src="/logo/logo-bs.png"
           alt="Logo"
-          width={400}
-          height={400}
-          className="object-cover w-16 md:w-24 h-auto cursor-pointer"
+          width={100}
+          height={100}
+          priority
+          className="object-cover w-16 md:w-20 h-8 md:h-10"
         />
         <BsPersonCircle className="text-2xl md:text-3xl text-black cursor-pointer hover:text-zinc-700" />
       </div>

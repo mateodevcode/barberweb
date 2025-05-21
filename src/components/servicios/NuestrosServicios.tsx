@@ -1,35 +1,15 @@
 "use client";
 
-import { Servicio } from "@/data/servicios";
-import { supabase } from "@/lib/supabaseClient";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { BiPlus } from "react-icons/bi";
 import { IoMdCut } from "react-icons/io";
-import Loading from "../loading/Loading";
+import { ContextApp } from "@/context/ContextApp";
 
 const NuestrosServicios = () => {
   const router = useRouter();
-  const [servicios, setServicios] = useState<Servicio[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchServicios = async () => {
-      const { data, error } = await supabase
-        .from("servicios")
-        .select("*")
-        .order("created_at", { ascending: true });
-      if (error) console.error("Error:", error);
-      else setServicios(data);
-      setLoading(false);
-    };
-    fetchServicios();
-  }, []);
-
-  if (loading) {
-    return <Loading />;
-  }
+  const { servicios } = useContext(ContextApp);
 
   return (
     <div className="w-full flex items-center justify-center mt-8">

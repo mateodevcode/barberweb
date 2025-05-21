@@ -1,36 +1,42 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { completarDia } from "@/config/completarDia";
 import { obtenerDosLetras } from "@/config/obtenerDosLetras";
-// import { barberos } from "@/data/barberos";
 import { meses, mesesSinDomingo } from "@/data/meses";
 import Image from "next/image";
-// import { servicios } from "@/data/servicios";
 import { BiPlus } from "react-icons/bi";
 import { useSearchParams } from "next/navigation";
 import { FaCircleCheck } from "react-icons/fa6";
 import { supabase } from "@/lib/supabaseClient";
-import { Barbero } from "@/data/barberos";
-import { Servicio } from "@/data/servicios";
 import { IoMdCut } from "react-icons/io";
 import Loading from "../loading/Loading";
 import Footer from "../footer/Footer";
 import { bloquesTrabajo } from "@/config/horas";
 import { obtenerFechaISO } from "@/config/obtenerFechaISO";
 import { calcularHoraFin } from "@/config/calcularHoraFin";
-import { Cita } from "@/data/citas";
 import { toast } from "sonner";
+import { ContextApp } from "@/context/ContextApp";
+import IniciarTour from "../guia/IniciarTour";
 
 const ReservarCita = () => {
   const searchParams = useSearchParams();
   const servicioParam = searchParams.get("servicio");
-  const [barberos, setBarberos] = useState<Barbero[]>([]);
-  const [servicios, setServicios] = useState<Servicio[]>([]);
-  const [citas, setCitas] = useState<Cita[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { barberos, servicios, citas, loading } = useContext(ContextApp);
   const [Dia, setDia] = useState("");
   const [duracion, setDuracion] = useState(0);
+  const [citaConfirmada, setCitaConfirmada] = useState(false);
+
+  useEffect(() => {
+    if (servicioParam) {
+      const servicioEncontrado = servicios.find(
+        (servicio) => servicio.id === servicioParam
+      );
+      if (servicioEncontrado) {
+        setDuracion(servicioEncontrado.duracion);
+      }
+    }
+  }, [servicioParam, servicios]);
 
   type Horas = {
     hora: string;
@@ -47,43 +53,6 @@ const ReservarCita = () => {
     estado: "confirmada",
   });
 
-  const [citaConfirmada, setCitaConfirmada] = useState(false);
-
-  useEffect(() => {
-    const fetchBarberos = async () => {
-      const { data, error } = await supabase
-        .from("barberos")
-        .select("*")
-        .order("created_at", { ascending: true });
-      if (error) console.error("Error:", error);
-      else setBarberos(data);
-      setLoading(false);
-    };
-    fetchBarberos();
-
-    const fetchServicios = async () => {
-      const { data, error } = await supabase
-        .from("servicios")
-        .select("*")
-        .order("created_at", { ascending: true });
-      if (error) console.error("Error:", error);
-      else setServicios(data);
-      setLoading(false);
-    };
-    fetchServicios();
-
-    const fetchCitas = async () => {
-      const { data, error } = await supabase
-        .from("citas")
-        .select("*")
-        .order("created_at", { ascending: true });
-      if (error) console.error("Error:", error);
-      else setCitas(data);
-      setLoading(false);
-    };
-    fetchCitas();
-  }, []);
-
   function estaHoraOcupada(horaFin: string, horasOcupadas: Horas[]): boolean {
     return horasOcupadas.some((bloque) => bloque.hora === horaFin);
   }
@@ -91,9 +60,12 @@ const ReservarCita = () => {
   function formatearHora(hora: string): string {
     return hora.slice(0, 5); // "09:00:00" -> "09:00"
   }
-
+  const citasDelBarbero = citas.filter(
+    (cita) =>
+      cita.barberos_id === formData.barbero && cita.fecha === formData.fecha
+  );
   const horasOcupadas = bloquesTrabajo.filter((bloque) => {
-    return citas.some((cita) => {
+    return citasDelBarbero.some((cita) => {
       const inicio = formatearHora(cita.hora_inicio);
       const fin = formatearHora(cita.hora_fin);
       return (
@@ -114,7 +86,9 @@ const ReservarCita = () => {
       !formData.hora_inicio ||
       !formData.hora_fin
     ) {
-      alert("Por favor, completa todos los campos.");
+      toast.error("Por favor, completa todos los campos.", {
+        position: "top-right",
+      });
       setCitaConfirmada(false);
       return;
     }
@@ -148,19 +122,25 @@ const ReservarCita = () => {
     <>
       <div className="w-full flex items-center justify-center bg-zinc-100 pt-4 pb-10">
         <div className="w-10/12 flex flex-col items-start justify-center">
-          <h2 className="text-2xl font-bold mb-4">Reservar Cita</h2>
+          <div className="flex flex-row items-center justify-between w-full">
+            <h2 className="text-2xl font-bold mb-4">Reservar Cita</h2>
+            <IniciarTour />
+          </div>
           <div className="flex flex-row items-center justify-between w-full">
             <h2 className="text-xl font-bold">Seleccionar el día</h2>
             <span className="text-zinc-500 text-sm font-semibold">
               {meses[0].mes}
             </span>
           </div>
-          <div className="flex flex-row items-center space-x-2 overflow-auto w-full justify-start py-5">
+          <div
+            className="flex flex-row items-center space-x-2 overflow-auto w-full justify-start py-5"
+            id="div-dia"
+          >
             {mesesSinDomingo.map((mes) => (
               <React.Fragment key={mes.mes}>
                 {mes.dias.map((dia, index) => (
                   <div
-                    className={`min-w-[70px] min-h-[100px] bg-white hover:bg-zinc-200 flex items-center justify-center cursor-pointer rounded-lg shadow-lg flex-col ${
+                    className={`min-w-[70px] min-h-[100px] bg-white hover:bg-zinc-200 flex items-center justify-center cursor-pointer rounded-lg shadow-lg flex-col card-dia ${
                       String(dia.dia) === Dia ? "bg-zinc-200" : ""
                     }`}
                     id={String(dia.dia)}
@@ -190,7 +170,7 @@ const ReservarCita = () => {
           <div className="flex flex-row items-center space-x-2 overflow-auto w-full justify-start py-5">
             {servicios.map((servicio, index) => (
               <div
-                className={`relative bg-white flex flex-col items-center justify-center min-w-[150px] h-36 rounded-xl shadow-lg space-y-1.5 p-4 cursor-pointer hover:bg-zinc-200 transition duration-300 ${
+                className={`relative bg-white flex flex-col items-center justify-center min-w-[150px] h-36 rounded-xl shadow-lg space-y-1.5 p-4 cursor-pointer hover:bg-zinc-200 transition duration-300 card-servicio ${
                   String(servicio.id) === formData.servicio ? "bg-zinc-200" : ""
                 }`}
                 key={index}
@@ -256,7 +236,7 @@ const ReservarCita = () => {
                     barbero: e.currentTarget.id,
                   });
                 }}
-                className={`min-w-[100px] min-h-[100px] bg-white hover:bg-zinc-200 flex items-center justify-center cursor-pointer rounded-lg shadow-lg flex-col space-y-1 ${
+                className={`min-w-[100px] min-h-[100px] bg-white hover:bg-zinc-200 flex items-center justify-center cursor-pointer rounded-lg shadow-lg flex-col space-y-1 card-barbero ${
                   String(barbero.id) === formData.barbero ? "bg-zinc-200" : ""
                 }`}
               >
@@ -280,8 +260,20 @@ const ReservarCita = () => {
                 key={index}
                 id={String(hora.hora)}
                 onClick={(e) => {
+                  if (!Dia) {
+                    toast.error("Por favor, selecciona un día primero", {
+                      position: "top-right",
+                    });
+                    return;
+                  }
                   if (!duracion) {
                     toast.error("Por favor, selecciona un servicio primero.", {
+                      position: "top-right",
+                    });
+                    return;
+                  }
+                  if (!formData.barbero) {
+                    toast.error("Por favor, selecciona un barbero primero.", {
                       position: "top-right",
                     });
                     return;
@@ -292,7 +284,12 @@ const ReservarCita = () => {
                       (bloque) => bloque.hora === e.currentTarget.id
                     )
                   ) {
-                    alert("La hora seleccionada ya está ocupada.");
+                    toast.error(
+                      "Hora ocupada. Por favor, selecciona otra hora.",
+                      {
+                        position: "top-right",
+                      }
+                    );
                     setCitaConfirmada(false);
                     setFormData({
                       ...formData,
@@ -306,8 +303,11 @@ const ReservarCita = () => {
                       horasOcupadas
                     )
                   ) {
-                    alert(
-                      "La hora que seleccionaste esta libre pero no la puedes usar por que no tiempo de corte es menor a 15 minutos"
+                    toast.error(
+                      "El servicio seleccionado requiere más tiempo. intenta con 15 minutos antes.",
+                      {
+                        position: "top-right",
+                      }
                     );
                     setCitaConfirmada(false);
                     setFormData({
@@ -322,7 +322,7 @@ const ReservarCita = () => {
                     hora_fin: calcularHoraFin(e.currentTarget.id, duracion),
                   });
                 }}
-                className={`min-w-[100px] min-h-[40px] flex items-center justify-center rounded-lg shadow-lg flex-col space-y-1 select-none  ${
+                className={`min-w-[100px] min-h-[40px] flex items-center justify-center rounded-lg shadow-lg flex-col space-y-1 select-none card-hora ${
                   horasOcupadas.some((bloque) => bloque.hora === hora.hora)
                     ? "bg-red-600 cursor-not-allowed text-white"
                     : String(hora.hora) === formData.hora_inicio
@@ -337,7 +337,7 @@ const ReservarCita = () => {
           <div className="flex flex-row items-center justify-between w-full mt-4">
             <h2 className="text-xl font-bold">Datos del cliente</h2>
           </div>
-          <div className="grid grid-cols-1 gap-4 mt-4 w-full">
+          <div className="grid grid-cols-1 gap-4 mt-4 w-full card-contacto">
             <input
               type="text"
               placeholder="Ingresa tu nombre"
@@ -369,7 +369,7 @@ const ReservarCita = () => {
           </div>
           <div className="flex items-center w-full justify-center my-10">
             <button
-              className="bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-zinc-800 transition duration-300 cursor-pointer select-none"
+              className="bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-zinc-800 transition duration-300 cursor-pointer select-none card-confirmar"
               onClick={(e) => {
                 handleSubmit(e);
               }}
