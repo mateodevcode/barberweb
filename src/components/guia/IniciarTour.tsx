@@ -56,7 +56,7 @@ const IniciarTour = () => {
           title: "Elige la hora",
           description:
             "Elige la hora que más te convenga para tu cita. verifica que el barbero esté disponible. \n\nRecuerda que cada servicio tiene una duración diferente.",
-          side: "over",
+          side: "top",
           align: "start",
         },
       },
