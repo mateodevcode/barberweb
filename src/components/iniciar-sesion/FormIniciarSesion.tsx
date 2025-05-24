@@ -25,7 +25,7 @@ export function FormIniciarSesion({
   const { router, setIdUser } = useContext(ContextApp);
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [verContraseña, setVerContraseña] = useState(false);
-  const [error, setError] = useState("");
+  const [, setError] = useState("");
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
