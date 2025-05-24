@@ -20,7 +20,7 @@ const NuestrosServicios = () => {
         <div className="flex flex-row items-center space-x-2 overflow-auto w-full justify-start py-5">
           {servicios.map((servicio, index) => (
             <div
-              className={`relative bg-white flex flex-col items-center justify-center min-w-[150px] h-36 rounded-xl shadow-lg space-y-1.5 p-4 cursor-pointer hover:bg-zinc-200 transition duration-300`}
+              className={`relative bg-white flex flex-col items-center justify-center min-w-[150px] h-36 rounded-xl shadow-lg space-y-1.5 p-4 hover:bg-zinc-200 active:scale-95 transition cursor-pointer select-none`}
               key={index}
               id={String(servicio.id)}
               onClick={() => {

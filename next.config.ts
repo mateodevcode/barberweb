@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
         hostname: "rbsqtdzlmkkrhmytayws.supabase.co",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "i.postimg.cc",
+        pathname: "/**",
+      },
     ],
   },
 };

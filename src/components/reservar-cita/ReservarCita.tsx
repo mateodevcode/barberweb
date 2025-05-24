@@ -140,7 +140,7 @@ const ReservarCita = () => {
               <React.Fragment key={mes.mes}>
                 {mes.dias.map((dia, index) => (
                   <div
-                    className={`min-w-[70px] min-h-[100px] bg-white hover:bg-zinc-200 flex items-center justify-center cursor-pointer rounded-lg shadow-lg flex-col card-dia ${
+                    className={`min-w-[70px] min-h-[100px] bg-white hover:bg-zinc-200 flex items-center justify-center rounded-lg shadow-lg flex-col card-dia transition active:scale-95 transform duration-75 cursor-pointer select-none ${
                       String(dia.dia) === Dia ? "bg-zinc-200" : ""
                     }`}
                     id={String(dia.dia)}
@@ -170,7 +170,7 @@ const ReservarCita = () => {
           <div className="flex flex-row items-center space-x-2 overflow-auto w-full justify-start py-5">
             {servicios.map((servicio, index) => (
               <div
-                className={`relative bg-white flex flex-col items-center justify-center min-w-[150px] h-36 rounded-xl shadow-lg space-y-1.5 p-4 cursor-pointer hover:bg-zinc-200 transition duration-300 card-servicio ${
+                className={`relative bg-white flex flex-col items-center justify-center min-w-[150px] h-36 rounded-xl shadow-lg space-y-1.5 p-4  hover:bg-zinc-200 active:scale-95 transform duration-75 cursor-pointer select-none card-servicio ${
                   String(servicio.id) === formData.servicio ? "bg-zinc-200" : ""
                 }`}
                 key={index}
@@ -236,7 +236,7 @@ const ReservarCita = () => {
                     barbero: e.currentTarget.id,
                   });
                 }}
-                className={`min-w-[100px] min-h-[100px] bg-white hover:bg-zinc-200 flex items-center justify-center cursor-pointer rounded-lg shadow-lg flex-col space-y-1 card-barbero ${
+                className={`min-w-[100px] min-h-[100px] bg-white hover:bg-zinc-200 flex items-center justify-center rounded-lg shadow-lg flex-col space-y-1 card-barbero active:scale-95 transform duration-75 cursor-pointer select-none ${
                   String(barbero.id) === formData.barbero ? "bg-zinc-200" : ""
                 }`}
               >
@@ -322,7 +322,7 @@ const ReservarCita = () => {
                     hora_fin: calcularHoraFin(e.currentTarget.id, duracion),
                   });
                 }}
-                className={`min-w-[100px] min-h-[40px] flex items-center justify-center rounded-lg shadow-lg flex-col space-y-1 select-none card-hora ${
+                className={`min-w-[100px] min-h-[40px] flex items-center justify-center rounded-lg shadow-lg flex-col space-y-1 active:scale-95 transform duration-75 cursor-pointer select-none card-hora ${
                   horasOcupadas.some((bloque) => bloque.hora === hora.hora)
                     ? "bg-red-600 cursor-not-allowed text-white"
                     : String(hora.hora) === formData.hora_inicio
@@ -369,7 +369,7 @@ const ReservarCita = () => {
           </div>
           <div className="flex items-center w-full justify-center my-10">
             <button
-              className="bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-zinc-800 transition duration-300 cursor-pointer select-none card-confirmar"
+              className="bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-zinc-800 transition duration-300 card-confirmar active:scale-95 transform cursor-pointer select-none"
               onClick={(e) => {
                 handleSubmit(e);
               }}

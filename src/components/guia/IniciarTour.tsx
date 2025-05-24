@@ -85,7 +85,7 @@ const IniciarTour = () => {
   return (
     <button
       onClick={() => driverObj.drive()}
-      className="text-xs text-zinc-700 font-semibold hover:text-zinc-400 hover:underline cursor-pointer"
+      className="text-xs text-zinc-700 font-semibold hover:text-zinc-400 hover:underline active:scale-95 transform duration-75 cursor-pointer select-none"
     >
       Iniciar Tour
     </button>
