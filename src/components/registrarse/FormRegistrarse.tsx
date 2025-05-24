@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import { Alert, AlertDescription } from "../ui/alert";
 import { AlertCircleIcon, Lock, Mail, User } from "lucide-react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-import { signIn } from "next-auth/react";
 import { ContextApp } from "@/context/ContextApp";
 
 interface FormData {
@@ -186,9 +185,6 @@ export function FormRegistrarse({ className, ...props }: FormRegistrarseProps) {
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
-            signIn("google", {
-              callbackUrl: "/",
-            });
           }}
         >
           <FcGoogle />
